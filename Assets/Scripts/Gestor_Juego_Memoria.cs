@@ -24,7 +24,6 @@ public class Gestor_Juego_Memoria : MonoBehaviour
 
     [Header("Lógica del Juego")]
     [SerializeField] float delayParaComprobar = 1f;
-    // MODIFICADO: Cambiamos los Materiales por GameObjects.
     [SerializeField] GameObject skyboxNivel1;
     [SerializeField] GameObject skyboxNivel2;
     [SerializeField] GameObject skyboxNivel3;
@@ -48,13 +47,10 @@ public class Gestor_Juego_Memoria : MonoBehaviour
 
     void ConfigurarNivel(int nivel)
     {
-        // MODIFICADO: Lógica para activar/desactivar los GameObjects de los skyboxes.
-        // Primero desactivamos todos para asegurarnos.
         if (skyboxNivel1 != null) skyboxNivel1.SetActive(false);
         if (skyboxNivel2 != null) skyboxNivel2.SetActive(false);
         if (skyboxNivel3 != null) skyboxNivel3.SetActive(false);
 
-        // Luego activamos el que corresponde al nivel actual.
         switch (nivel)
         {
             case 1:
@@ -161,6 +157,9 @@ public class Gestor_Juego_Memoria : MonoBehaviour
         {
             primeraSeleccion.Voltear();
             segundaSeleccion.Voltear();
+
+            // MODIFICACIÓN CLAVE: Espera hasta que ambas tarjetas hayan terminado de girar.
+            yield return new WaitUntil(() => !primeraSeleccion.IsRotating && !segundaSeleccion.IsRotating);
         }
 
         primeraSeleccion = null;
@@ -178,6 +177,7 @@ public class Gestor_Juego_Memoria : MonoBehaviour
 
         foreach (var tarjeta in tarjetasActivasEnJuego)
         {
+            tarjeta.ResetTarjeta();
             tarjeta.gameObject.SetActive(true);
         }
 

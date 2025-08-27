@@ -46,10 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Target
   value: 1
-  active: 0
-  selected: 0
   rotationDuration: 0.5
-  gestorJuego: {fileID: 0}
 --- !u!1001 &5129868600263219796
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -114,9 +111,6 @@ PrefabInstance:
       addedObject: {fileID: 5631092350292694414}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 73fb638bd7c9c7e4cbd26ca2965f0e0c, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 6166314117195169906}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 73fb638bd7c9c7e4cbd26ca2965f0e0c, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 281074952237436985}
   m_SourcePrefab: {fileID: 100100000, guid: 73fb638bd7c9c7e4cbd26ca2965f0e0c, type: 3}
 --- !u!4 &4664125221671009727 stripped
@@ -177,23 +171,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &6166314117195169906
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5472328203552139013}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07cec0edc83abe24aa7fb8b6697d3206, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Target
-  value: 1
-  active: 0
-  selected: 0
-  rotationDuration: 0.5
-  gestorJuego: {fileID: 0}
 --- !u!114 &281074952237436985
 MonoBehaviour:
   m_ObjectHideFlags: 0
