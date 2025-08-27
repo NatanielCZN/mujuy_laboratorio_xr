@@ -34,7 +34,7 @@ public class Gestor_Juego_Memoria : MonoBehaviour
     private Target segundaSeleccion;
 
     private int paresEncontrados = 0;
-    private bool puedeSeleccionar = false;
+    public bool puedeSeleccionar = false;
     private int totalPares;
     private int nivelActual = 1;
 
@@ -161,6 +161,8 @@ public class Gestor_Juego_Memoria : MonoBehaviour
             // MODIFICACIÓN CLAVE: Espera hasta que ambas tarjetas hayan terminado de girar.
             yield return new WaitUntil(() => !primeraSeleccion.IsRotating && !segundaSeleccion.IsRotating);
         }
+
+        yield return new WaitForSeconds(1f);
 
         primeraSeleccion = null;
         segundaSeleccion = null;
