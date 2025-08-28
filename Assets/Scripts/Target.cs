@@ -34,8 +34,11 @@ public class Target : MonoBehaviour
     }
     Debug.Log($"Tarjeta seleccionada con valor: {value}");
 
-    Voltear();
-    gestorJuego.TarjetaSeleccionada(this);
+    if (gestorJuego.puedeSeleccionar)
+    {
+      Voltear();
+      gestorJuego.TarjetaSeleccionada(this);
+    }
   }
 
   public void Voltear()
