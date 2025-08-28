@@ -6,6 +6,8 @@ public class Target : MonoBehaviour
   [SerializeField] private int value;
   [SerializeField] private float rotationDuration = 0.5f;
 
+  [SerializeField] private GameObject audioSource;
+
   private bool isRotating = false;
   private bool isMoving = false;
 
@@ -36,6 +38,11 @@ public class Target : MonoBehaviour
 
     if (gestorJuego.puedeSeleccionar)
     {
+      if (audioSource != null)
+      {
+        Instantiate(audioSource, transform.position, Quaternion.identity);
+      }
+
       Voltear();
       gestorJuego.TarjetaSeleccionada(this);
     }

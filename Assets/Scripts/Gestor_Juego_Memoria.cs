@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+// AÑADIDO: Necesario para poder usar TextMeshPro.
+using TMPro;
 
 public class Gestor_Juego_Memoria : MonoBehaviour
 {
@@ -28,6 +30,20 @@ public class Gestor_Juego_Memoria : MonoBehaviour
     [SerializeField] GameObject skyboxNivel2;
     [SerializeField] GameObject skyboxNivel3;
     [SerializeField] GameObject objetoVictoria;
+    [SerializeField] GameObject audioNivelCompletado;
+    [SerializeField] GameObject audioMatchFound;
+    // AÑADIDO: Tiempos para cada nivel y elementos de derrota.
+    [SerializeField] private float[] tiempoPorNivel = { 20f, 30f, 40f };
+    [SerializeField] private GameObject objetoDerrota1;
+    [SerializeField] private GameObject objetoDerrota2;
+    [SerializeField] private GameObject audioDerrota;
+
+
+    // AÑADIDO: Referencias para los elementos de la UI.
+    [Header("Interfaz de Usuario (UI)")]
+    [SerializeField] private TextMeshProUGUI textoTiempo;
+    [SerializeField] private TextMeshProUGUI textoNivel;
+    [SerializeField] private TextMeshProUGUI textoPares;
 
 
     private Target primeraSeleccion;
@@ -38,11 +54,40 @@ public class Gestor_Juego_Memoria : MonoBehaviour
     private int totalPares;
     private int nivelActual = 1;
 
+    // MODIFICADO: La variable ahora es para el tiempo restante.
+    private float tiempoRestante;
+    private bool cronometroActivo = false;
+
     void Start()
     {
         if (objetoVictoria != null) objetoVictoria.SetActive(false);
+        // AÑADIDO: Aseguramos que los objetos de derrota estén desactivados al inicio.
+        if (objetoDerrota1 != null) objetoDerrota1.SetActive(false);
+        if (objetoDerrota2 != null) objetoDerrota2.SetActive(false);
         DesactivarTodasLasTarjetas();
         ConfigurarNivel(nivelActual);
+    }
+
+    // MODIFICADO: El método Update ahora maneja una cuenta regresiva.
+    void Update()
+    {
+        if (cronometroActivo)
+        {
+            tiempoRestante -= Time.deltaTime;
+
+            // Si el tiempo llega a cero, se maneja la derrota.
+            if (tiempoRestante <= 0)
+            {
+                tiempoRestante = 0;
+                ManejarDerrota();
+            }
+
+            if (textoTiempo != null)
+            {
+                // MODIFICADO: Ahora solo muestra los segundos restantes, redondeados hacia arriba.
+                textoTiempo.text = Mathf.CeilToInt(tiempoRestante).ToString();
+            }
+        }
     }
 
     void ConfigurarNivel(int nivel)
@@ -53,15 +98,9 @@ public class Gestor_Juego_Memoria : MonoBehaviour
 
         switch (nivel)
         {
-            case 1:
-                if (skyboxNivel1 != null) skyboxNivel1.SetActive(true);
-                break;
-            case 2:
-                if (skyboxNivel2 != null) skyboxNivel2.SetActive(true);
-                break;
-            case 3:
-                if (skyboxNivel3 != null) skyboxNivel3.SetActive(true);
-                break;
+            case 1: if (skyboxNivel1 != null) skyboxNivel1.SetActive(true); break;
+            case 2: if (skyboxNivel2 != null) skyboxNivel2.SetActive(true); break;
+            case 3: if (skyboxNivel3 != null) skyboxNivel3.SetActive(true); break;
         }
 
         paresEncontrados = 0;
@@ -78,6 +117,21 @@ public class Gestor_Juego_Memoria : MonoBehaviour
         }
 
         totalPares = tarjetasActivasEnJuego.Count / 2;
+
+        if (textoNivel != null) textoNivel.text = $"Nivel: {nivelActual}";
+        if (textoPares != null) textoPares.text = $"Pares: {paresEncontrados}/{totalPares}";
+
+        cronometroActivo = false;
+        // MODIFICADO: Se establece el tiempo inicial del nivel desde el arreglo.
+        if (nivel - 1 < tiempoPorNivel.Length)
+        {
+            tiempoRestante = tiempoPorNivel[nivel - 1];
+        }
+        else
+        {
+            // Si no hay un tiempo definido para el nivel, usa el último disponible.
+            tiempoRestante = tiempoPorNivel[tiempoPorNivel.Length - 1];
+        }
 
         if (posicionesFinales.Length < tarjetasActivasEnJuego.Count)
         {
@@ -123,6 +177,7 @@ public class Gestor_Juego_Memoria : MonoBehaviour
         yield return new WaitForSeconds(duracionMovimiento);
         Debug.Log($"Movimiento Nivel {nivelActual} completado. ¡Puedes empezar a jugar!");
         puedeSeleccionar = true;
+        cronometroActivo = true;
     }
 
     public void TarjetaSeleccionada(Target tarjeta)
@@ -145,10 +200,18 @@ public class Gestor_Juego_Memoria : MonoBehaviour
         {
             primeraSeleccion.Ocultar();
             segundaSeleccion.Ocultar();
+
+            if (audioMatchFound != null)
+            {
+                Instantiate(audioMatchFound, transform.position, Quaternion.identity);
+            }
+
             paresEncontrados++;
+            if (textoPares != null) textoPares.text = $"Pares: {paresEncontrados}/{totalPares}";
 
             if (paresEncontrados == totalPares)
             {
+                cronometroActivo = false;
                 Debug.Log($"¡NIVEL {nivelActual} COMPLETADO!");
                 StartCoroutine(TransicionDeNivel());
             }
@@ -157,12 +220,8 @@ public class Gestor_Juego_Memoria : MonoBehaviour
         {
             primeraSeleccion.Voltear();
             segundaSeleccion.Voltear();
-
-            // MODIFICACIÓN CLAVE: Espera hasta que ambas tarjetas hayan terminado de girar.
             yield return new WaitUntil(() => !primeraSeleccion.IsRotating && !segundaSeleccion.IsRotating);
         }
-
-        yield return new WaitForSeconds(1f);
 
         primeraSeleccion = null;
         segundaSeleccion = null;
@@ -176,6 +235,11 @@ public class Gestor_Juego_Memoria : MonoBehaviour
     private IEnumerator TransicionDeNivel()
     {
         yield return new WaitForSeconds(1.5f);
+
+        if (audioNivelCompletado != null)
+        {
+            Instantiate(audioNivelCompletado, transform.position, Quaternion.identity);
+        }
 
         foreach (var tarjeta in tarjetasActivasEnJuego)
         {
@@ -198,12 +262,37 @@ public class Gestor_Juego_Memoria : MonoBehaviour
         if (nivelActual > 3)
         {
             Debug.Log("¡HAS GANADO TODO EL JUEGO!");
+            foreach (var tarjeta in tarjetasActivasEnJuego)
+            {
+                tarjeta.Ocultar();
+            }
             if (objetoVictoria != null) objetoVictoria.SetActive(true);
         }
         else
         {
             Debug.Log($"Cargando Nivel {nivelActual}...");
             ConfigurarNivel(nivelActual);
+        }
+    }
+
+    // AÑADIDO: Nueva función para manejar la derrota.
+    void ManejarDerrota()
+    {
+        cronometroActivo = false;
+        puedeSeleccionar = false;
+        Debug.Log("¡SE ACABÓ EL TIEMPO! HAS PERDIDO.");
+
+        if (audioDerrota != null)
+        {
+            Instantiate(audioDerrota, transform.position, Quaternion.identity);
+        }
+        if (objetoDerrota1 != null) objetoDerrota1.SetActive(true);
+        if (objetoDerrota2 != null) objetoDerrota2.SetActive(true);
+
+        // Ocultamos todas las tarjetas activas.
+        foreach (var tarjeta in tarjetasActivasEnJuego)
+        {
+            tarjeta.Ocultar();
         }
     }
 }

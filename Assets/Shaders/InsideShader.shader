@@ -10,8 +10,6 @@ Shader "Custom/InsideShader"
     {
         Tags { "RenderType" = "Opaque" "RenderPipeline" = "UniversalPipeline" }
 
-        Cull Front
-
         Pass
         {
             HLSLPROGRAM
