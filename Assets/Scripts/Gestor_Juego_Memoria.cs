@@ -33,10 +33,12 @@ public class Gestor_Juego_Memoria : MonoBehaviour
     [SerializeField] GameObject audioNivelCompletado;
     [SerializeField] GameObject audioMatchFound;
     // AÑADIDO: Tiempos para cada nivel y elementos de derrota.
-    [SerializeField] private float[] tiempoPorNivel = { 20f, 30f, 40f };
-    [SerializeField] private GameObject objetoDerrota1;
-    [SerializeField] private GameObject objetoDerrota2;
+    [SerializeField] private float[] tiempoPorNivel = { 60f, 120f, 180f };
+    [SerializeField] private GameObject objetoDerrota;
     [SerializeField] private GameObject audioDerrota;
+
+    // OBJETOS QUE SE DESACTIVAN
+    [SerializeField] private GameObject menuActivable;
 
 
     // AÑADIDO: Referencias para los elementos de la UI.
@@ -62,8 +64,7 @@ public class Gestor_Juego_Memoria : MonoBehaviour
     {
         if (objetoVictoria != null) objetoVictoria.SetActive(false);
         // AÑADIDO: Aseguramos que los objetos de derrota estén desactivados al inicio.
-        if (objetoDerrota1 != null) objetoDerrota1.SetActive(false);
-        if (objetoDerrota2 != null) objetoDerrota2.SetActive(false);
+        if (objetoDerrota != null) objetoDerrota.SetActive(false);
         DesactivarTodasLasTarjetas();
         ConfigurarNivel(nivelActual);
     }
@@ -118,8 +119,8 @@ public class Gestor_Juego_Memoria : MonoBehaviour
 
         totalPares = tarjetasActivasEnJuego.Count / 2;
 
-        if (textoNivel != null) textoNivel.text = $"Nivel: {nivelActual}";
-        if (textoPares != null) textoPares.text = $"Pares: {paresEncontrados}/{totalPares}";
+        if (textoNivel != null) textoNivel.text = $"NIVEL {nivelActual}";
+        if (textoPares != null) textoPares.text = $"{paresEncontrados}/{totalPares}";
 
         cronometroActivo = false;
         // MODIFICADO: Se establece el tiempo inicial del nivel desde el arreglo.
@@ -262,11 +263,16 @@ public class Gestor_Juego_Memoria : MonoBehaviour
         if (nivelActual > 3)
         {
             Debug.Log("¡HAS GANADO TODO EL JUEGO!");
+
             foreach (var tarjeta in tarjetasActivasEnJuego)
             {
                 tarjeta.Ocultar();
             }
-            if (objetoVictoria != null) objetoVictoria.SetActive(true);
+            if (objetoVictoria != null)
+            {
+                menuActivable.SetActive(false);
+                objetoVictoria.SetActive(true);
+            }
         }
         else
         {
@@ -286,8 +292,7 @@ public class Gestor_Juego_Memoria : MonoBehaviour
         {
             Instantiate(audioDerrota, transform.position, Quaternion.identity);
         }
-        if (objetoDerrota1 != null) objetoDerrota1.SetActive(true);
-        if (objetoDerrota2 != null) objetoDerrota2.SetActive(true);
+        if (objetoDerrota != null) objetoDerrota.SetActive(true);
 
         // Ocultamos todas las tarjetas activas.
         foreach (var tarjeta in tarjetasActivasEnJuego)
