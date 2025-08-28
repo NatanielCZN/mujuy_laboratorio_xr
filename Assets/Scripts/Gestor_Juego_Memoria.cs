@@ -32,6 +32,7 @@ public class Gestor_Juego_Memoria : MonoBehaviour
     [SerializeField] GameObject objetoVictoria;
     [SerializeField] GameObject audioNivelCompletado;
     [SerializeField] GameObject audioMatchFound;
+    [SerializeField] GameObject audioInicial;
     // AÑADIDO: Tiempos para cada nivel y elementos de derrota.
     [SerializeField] private float[] tiempoPorNivel = { 60f, 120f, 180f };
     [SerializeField] private GameObject objetoDerrota;
@@ -67,6 +68,7 @@ public class Gestor_Juego_Memoria : MonoBehaviour
         if (objetoDerrota != null) objetoDerrota.SetActive(false);
         DesactivarTodasLasTarjetas();
         ConfigurarNivel(nivelActual);
+        StartCoroutine(AudioInicial());
     }
 
     // MODIFICADO: El método Update ahora maneja una cuenta regresiva.
@@ -89,6 +91,13 @@ public class Gestor_Juego_Memoria : MonoBehaviour
                 textoTiempo.text = Mathf.CeilToInt(tiempoRestante).ToString();
             }
         }
+    }
+
+    private IEnumerator AudioInicial()
+    {
+        yield return new WaitForSeconds(3f);
+
+        Instantiate(audioInicial, transform.position, Quaternion.identity);
     }
 
     void ConfigurarNivel(int nivel)
