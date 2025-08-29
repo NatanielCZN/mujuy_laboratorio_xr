@@ -7,6 +7,7 @@ public class Iniciador : MonoBehaviour
     [SerializeField] private GameObject objetoActivar;
     [SerializeField] private VideoPlayer videoPlayer;
     [SerializeField] private float delay = 3f;
+    [SerializeField] private OpacityTransition transicion;
 
     private void Start()
     {
@@ -20,6 +21,8 @@ public class Iniciador : MonoBehaviour
     {
         // Espera el delay configurado
         yield return new WaitForSeconds(delay);
+
+        transicion.FadeOut();
 
         // Se suscribe al evento de fin del video
         videoPlayer.loopPointReached += OnVideoEnd;
@@ -37,6 +40,8 @@ public class Iniciador : MonoBehaviour
     // Método que activa/desactiva objetos
     public void ActivarMenu()
     {
+        transicion.FadeIn();
+        transicion.FadeOut();
         videoPlayer.gameObject.SetActive(false);
         objetoActivar.SetActive(true);
     }

@@ -33,6 +33,8 @@ public class Gestor_Juego_Memoria : MonoBehaviour
     [SerializeField] GameObject audioNivelCompletado;
     [SerializeField] GameObject audioMatchFound;
     [SerializeField] GameObject audioInicial;
+    [SerializeField] GameObject audioRayo;
+    [SerializeField] AudioFade musicaJuego;
     // AÑADIDO: Tiempos para cada nivel y elementos de derrota.
     [SerializeField] private float[] tiempoPorNivel = { 60f, 120f, 180f };
     [SerializeField] private GameObject objetoDerrota;
@@ -40,7 +42,7 @@ public class Gestor_Juego_Memoria : MonoBehaviour
 
     // OBJETOS QUE SE DESACTIVAN
     [SerializeField] private GameObject menuActivable;
-
+    [SerializeField] private OpacityTransition transicion;
 
     // AÑADIDO: Referencias para los elementos de la UI.
     [Header("Interfaz de Usuario (UI)")]
@@ -69,6 +71,10 @@ public class Gestor_Juego_Memoria : MonoBehaviour
         DesactivarTodasLasTarjetas();
         ConfigurarNivel(nivelActual);
         StartCoroutine(AudioInicial());
+        if (musicaJuego != null)
+        {
+            musicaJuego.FadeIn();
+        }
     }
 
     // MODIFICADO: El método Update ahora maneja una cuenta regresiva.
@@ -113,6 +119,11 @@ public class Gestor_Juego_Memoria : MonoBehaviour
             case 3: if (skyboxNivel3 != null) skyboxNivel3.SetActive(true); break;
         }
 
+        transicion.FadeIn();
+        transicion.FadeOut();
+        Instantiate(audioRayo, transform.position, Quaternion.identity);
+
+        textoTiempo.text = "-";
         paresEncontrados = 0;
         puedeSeleccionar = false;
         tarjetasActivasEnJuego.Clear();
@@ -279,6 +290,10 @@ public class Gestor_Juego_Memoria : MonoBehaviour
             }
             if (objetoVictoria != null)
             {
+                if (musicaJuego != null)
+                {
+                    musicaJuego.FadeOut();
+                }
                 menuActivable.SetActive(false);
                 objetoVictoria.SetActive(true);
             }
@@ -308,5 +323,7 @@ public class Gestor_Juego_Memoria : MonoBehaviour
         {
             tarjeta.Ocultar();
         }
+
+        musicaJuego.FadeOut();
     }
 }
