@@ -49,6 +49,7 @@ public class Gestor_Juego_Memoria : MonoBehaviour
     [SerializeField] private TextMeshProUGUI textoTiempo;
     [SerializeField] private TextMeshProUGUI textoNivel;
     [SerializeField] private TextMeshProUGUI textoPares;
+    [SerializeField] private float delayNivelCompletado = 3f;
 
 
     private Target primeraSeleccion;
@@ -121,7 +122,6 @@ public class Gestor_Juego_Memoria : MonoBehaviour
 
         transicion.FadeIn();
         transicion.FadeOut();
-        Instantiate(audioRayo, transform.position, Quaternion.identity);
 
         textoTiempo.text = "-";
         paresEncontrados = 0;
@@ -255,7 +255,7 @@ public class Gestor_Juego_Memoria : MonoBehaviour
 
     private IEnumerator TransicionDeNivel()
     {
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(delayNivelCompletado);
 
         if (audioNivelCompletado != null)
         {
@@ -269,6 +269,8 @@ public class Gestor_Juego_Memoria : MonoBehaviour
         }
 
         yield return new WaitForSeconds(0.5f);
+
+        Instantiate(audioRayo, transform.position, Quaternion.identity);
 
         Debug.Log("Retirando tarjetas al punto de inicio...");
         foreach (var tarjeta in tarjetasActivasEnJuego)
