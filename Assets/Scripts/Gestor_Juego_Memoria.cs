@@ -270,8 +270,6 @@ public class Gestor_Juego_Memoria : MonoBehaviour
 
         yield return new WaitForSeconds(0.5f);
 
-        Instantiate(audioRayo, transform.position, Quaternion.identity);
-
         Debug.Log("Retirando tarjetas al punto de inicio...");
         foreach (var tarjeta in tarjetasActivasEnJuego)
         {
@@ -281,6 +279,8 @@ public class Gestor_Juego_Memoria : MonoBehaviour
         yield return new WaitForSeconds(duracionMovimiento + 0.5f);
 
         nivelActual++;
+
+        Instantiate(audioRayo, transform.position, Quaternion.identity);
 
         if (nivelActual > 3)
         {
