@@ -217,7 +217,7 @@ public class Gestor_Juego_Memoria : MonoBehaviour
             }
 
             paresEncontrados++;
-            if (textoPares != null) textoPares.text = $"Pares: {paresEncontrados}/{totalPares}";
+            if (textoPares != null) textoPares.text = $"{paresEncontrados}/{totalPares}";
 
             if (paresEncontrados == totalPares)
             {

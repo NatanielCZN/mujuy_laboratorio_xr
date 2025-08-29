@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Negro
+  m_Name: NegroTransparent
   m_Shader: {fileID: 4800000, guid: 58e0e10d0ff0acf46bc1cae4c0279d91, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
